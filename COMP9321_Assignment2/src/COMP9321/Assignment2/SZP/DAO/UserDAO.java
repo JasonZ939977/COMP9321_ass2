@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,6 +22,7 @@ import javax.mail.internet.MimeMessage;
 import com.mysql.jdbc.Statement;
 
 import COMP9321.Assignment2.SZP.TOOL.DBUtils;
+import COMP9321.Assignment2.SZP.BEEN.User;
 
 import java.util.*;
 
@@ -117,6 +117,7 @@ public class UserDAO {
 		return output;
 	}
 	
+	
 	public static String searchUserAct(String name){
 		String output = "";
 		try{  
@@ -140,6 +141,37 @@ public class UserDAO {
 		    con.close(); 		    
 		    }catch(Exception e){e.printStackTrace();}
 		return output;
+	}
+	
+	public User userLogin(String uname, String password){
+		Connection conn = null;
+		User user = new User();
+		try{
+			String sql = "SELECT * FROM users WHERE username = '" + uname + "' and "
+					+ "password='"+getMD5(password)+"' and"
+					+ " acc_status = 1;";
+		    conn=DBUtils.getConnection();  
+		    PreparedStatement ps=conn.prepareStatement(sql);  
+		    ResultSet rs=ps.executeQuery();  
+		    System.out.println(uname);
+		    while(rs.next()){
+		    	user.setId(rs.getString("id"));
+		    	System.out.println(user.getId());
+				user.setFname(rs.getString("fname"));
+				user.setLname(rs.getString("lname"));
+				user.setEmail(rs.getString("email"));
+				user.setAdmin(rs.getInt("admin"));
+				user.setType(rs.getInt("type"));
+				user.setYob(rs.getInt("yob"));
+				user.setFull_address(rs.getString("full_address"));
+				user.setCc_no(rs.getString("cc_no"));
+				}	    
+		    conn.close(); 	
+		    
+		    }catch(Exception e){
+		    	e.printStackTrace();
+		    }
+		return user;
 	}
 	
 	public static boolean createUser(String username, String nickName, 

@@ -12,11 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import com.mysql.jdbc.Statement;
 
+import COMP9321.Assignment2.SZP.BEEN.User;
 import COMP9321.Assignment2.SZP.DAO.UserDAO;
 import COMP9321.Assignment2.SZP.TOOL.DBUtils;
 
-
 /**
+ * @author Jason
  * Servlet implementation class RouterServlet
  */
 
@@ -72,66 +73,25 @@ public class RouterServlet extends HttpServlet {
 			HttpServletResponse response, HttpSession session) throws ServletException, IOException {
 		String uname = getRequestParameter(request, "user");
 		String password = getRequestParameter(request, "password");
-		String user_id = null, full_name = null, email = null,fname= null,yob= null, full_address=null, cc=null;
-		Integer admin_status = null, type = null;
-		System.out.println("Username: " + uname + ". Password: " + password);
-		Connection conn = null;
-		Statement stmt = null;
-		Integer i= 0;
-		try {
-			// STEP 2: Register JDBC driver
-			Class.forName("com.mysql.jdbc.Driver");
-
-			// STEP 3: Open a connection
-			conn = DBUtils.getConnection();
-
-			// STEP 4: Execute a query
-			stmt = (Statement) conn.createStatement();
-
-			String sql = "SELECT * FROM users WHERE username = '" + uname + "' and "
-					+ "password='"+UserDAO.getMD5(password)+"' and"
-					+ " acc_status = 1;";
-			System.out.println(sql);
-			ResultSet rs = stmt.executeQuery(sql);
-			// STEP 5: Extract data from result set
-			while(rs.next()){
-				user_id = rs.getString("id");
-				fname = rs.getString("fname");
-				full_name = rs.getString("fname") + " " + rs.getString("lname");
-				email = rs.getString("email");
-				admin_status = rs.getInt("admin");
-				type = rs.getInt("type");
-				yob = rs.getString("yob");
-				full_address = rs.getString("full_address");
-				cc = rs.getString("cc_no");
-			}
-			
-				//System.out.println("User Found");
-				response.setContentType("text/html;charset=UTF-8");
-	            response.getWriter().write("True");
-	            session.setAttribute("user_name",uname);
-	            session.setAttribute("user_id",user_id);
-	            session.setAttribute("full_name",full_name);
-	            session.setAttribute("email",email);
-	            session.setAttribute("admin_status",admin_status.toString());
-	            session.setAttribute("type",type.toString());
-	            session.setAttribute("yob",yob);
-	            session.setAttribute("fname",fname);
-	            session.setAttribute("full_address",full_address);
-	            session.setAttribute("cc",cc);
-	            //session.setAttribute("cart", CartLogger.loadSavedCart(Integer.parseInt(user_id)));
-			
-			rs.close();
-		} catch (SQLException se) {
-			// Handle errors for JDBC
-			se.printStackTrace();
-		}catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
-			//System.out.println("MD5 Exception");
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		UserDAO userDao = new UserDAO();
+		User user = userDao.userLogin(uname, password);
+		if(!user.getId().isEmpty()){
+			response.setContentType("text/html;charset=UTF-8");
+		    response.getWriter().write("True");
+		    System.out.println("User Found");
+		    session.setAttribute("user_name",uname);
+		    session.setAttribute("user_id",user.getId());
+		    session.setAttribute("full_name",user.getFname() + user.getLname());
+		    session.setAttribute("email",user.getEmail());
+		    session.setAttribute("admin_status",user.getAcc_status());
+		    session.setAttribute("type",user.getType());
+		    session.setAttribute("yob",user.getYob());
+		    session.setAttribute("fname",user.getFname());
+		    session.setAttribute("full_address",user.getFull_address());
+		    session.setAttribute("cc",user.getCc_no());
+		    //session.setAttribute("cart", CartLogger.loadSavedCart(Integer.parseInt(user_id)));
+		}else{
+			System.out.println("not found");
 		}
-		
 	}
 }
