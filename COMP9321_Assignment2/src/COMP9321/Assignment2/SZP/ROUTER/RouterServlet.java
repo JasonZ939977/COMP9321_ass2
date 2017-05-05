@@ -75,6 +75,7 @@ public class RouterServlet extends HttpServlet {
 		String password = getRequestParameter(request, "password");
 		UserDAO userDao = new UserDAO();
 		User user = userDao.userLogin(uname, password);
+		// git try!
 		if(!user.getId().isEmpty()){
 			response.setContentType("text/html;charset=UTF-8");
 		    response.getWriter().write("True");
