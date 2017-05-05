@@ -1,20 +1,16 @@
 package COMP9321.Assignment2.SZP.ROUTER;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import com.mysql.jdbc.Statement;
-
 import COMP9321.Assignment2.SZP.BEEN.User;
-import COMP9321.Assignment2.SZP.DAO.UserDAO;
-import COMP9321.Assignment2.SZP.TOOL.DBUtils;
+import COMP9321.Assignment2.SZP.DAO.UserDao;
 
 /**
  * @author Jason
@@ -55,9 +51,13 @@ public class RouterServlet extends HttpServlet {
 		
 		if (action.equals("login")) {
 			login(request, response, session);
-		} 
+		} else if (action.equals("signup")) {
+			signup(request, response, session);
+		}
 	}
 	
+	
+
 	private String getRequestParameter(HttpServletRequest request,
 			String parameter) {
 		String value = request.getParameter(parameter);
@@ -73,7 +73,7 @@ public class RouterServlet extends HttpServlet {
 			HttpServletResponse response, HttpSession session) throws ServletException, IOException {
 		String uname = getRequestParameter(request, "user");
 		String password = getRequestParameter(request, "password");
-		UserDAO userDao = new UserDAO();
+		UserDao userDao = new UserDao();
 		User user = userDao.userLogin(uname, password);
 		// git try!
 		if(!user.getId().isEmpty()){
@@ -93,6 +93,44 @@ public class RouterServlet extends HttpServlet {
 		    //session.setAttribute("cart", CartLogger.loadSavedCart(Integer.parseInt(user_id)));
 		}else{
 			System.out.println("not found");
+		}
+	}
+	
+	private void signup(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
+		// TODO Auto-generated method stub	
+		String username = null, nickName = null,fname = null, lname = null,email = null,full_address = null, password = null, CC = null;
+		Integer yob = null,type = null;
+		username = getRequestParameter(request,"username");
+		nickName = getRequestParameter(request,"nickName");
+		fname = getRequestParameter(request,"fname");
+		lname = getRequestParameter(request,"lname");
+		email = getRequestParameter(request,"email");
+		full_address = getRequestParameter(request,"full_address");
+		yob = Integer.valueOf(getRequestParameter(request,"yob"));
+		
+		UserDao user = new UserDao();
+		try {
+			password = UserDao.getMD5(getRequestParameter(request,"password"));
+			type = Integer.valueOf(getRequestParameter(request,"type"));
+			CC = getRequestParameter(request,"CC");
+			System.out.println(CC);
+			if(user.insertUser(username,nickName,fname,  lname,  email,  yob,  full_address,  CC,  password,  type)){
+				String body = "Hi "+ nickName + ",<br><br>Please click on the following link to complete your dblpStore Registration<br><br>";
+				body += "<a href='"+"http://localhost:8080/COMP9321_Ass2/emailConfirm.jsp?accId="+username +"'> Complete Registration</a><br><br>regards,<br>dblpAdmin" ;
+				String subject = " Complete your registration";
+				UserDao.sendMail(email, subject  , body);
+				response.setContentType("text/html;charset=UTF-8");
+				response.getWriter().write("True");
+			}else{
+				response.setContentType("text/html;charset=UTF-8");
+				response.getWriter().write("False");
+			}
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

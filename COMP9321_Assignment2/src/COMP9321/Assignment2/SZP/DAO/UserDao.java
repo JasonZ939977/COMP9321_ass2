@@ -30,7 +30,7 @@ import java.util.*;
  * @author Jason
  *
  */
-public class UserDAO {
+public class UserDao {
 	
 	public static String getMD5(String data) throws NoSuchAlgorithmException
     { 
@@ -174,8 +174,8 @@ public class UserDAO {
 		return user;
 	}
 	
-	public static boolean createUser(String username, String nickName, 
-			String fname, String lname, String email, Integer yob, String full_address, BigInteger CC, String password, Integer type){
+	public boolean insertUser(String username, String nickName, 
+			String fname, String lname, String email, Integer yob, String full_address, String CC, String password, Integer type){
 		
 		Connection conn = null;
 		Statement stmt = null;
