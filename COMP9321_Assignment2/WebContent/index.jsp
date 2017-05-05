@@ -94,16 +94,13 @@
 					</ul>
 				</div>
 			</nav>
-			<div class="alert alert-success alert-dismissable">
-				 
-				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-					Ã
-				</button>
-				<h4>
-					Alert!
-				</h4> <strong>Warning!</strong> Best check yo self, you're not looking too good. <a href="#" class="alert-link">alert link</a>
+			<div class="col-md-1">
 			</div>
+			<div class="col-md-10">
 			<%@ include file="login_and_register.jsp" %>
+			</div>
+			<div class="col-md-1">
+			</div>
 		</div>
 	</div>
 </div>
