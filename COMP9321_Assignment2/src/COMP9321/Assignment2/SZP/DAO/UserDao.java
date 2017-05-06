@@ -4,7 +4,6 @@ package COMP9321.Assignment2.SZP.DAO;
  */
 
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -27,7 +26,7 @@ import COMP9321.Assignment2.SZP.BEEN.User;
 import java.util.*;
 
 /**
- * @author Jason
+ * @author Jasonzhuang
  *
  */
 public class UserDao {
@@ -45,14 +44,16 @@ public class UserDao {
         return sb.toString();
     }
 	
-	public static void sendMail(String email, String sub,String body){
+	public static void sendMail(String email, String userName,String nickName){
 		String host = "outlook.office365.com";
 		String user = "z5043424@ad.unsw.edu.au";
 		String pass = "Zy425323";
 		String to = email;
-		String from = "s.vajiraya@unsw.edu.au";
-		String subject = sub;
-		String messageText = body;
+		String from = "z5043424@ad.unsw.edu.au";
+		String messageText = "Hi "+ nickName + ",<br><br>Please click on the following link to complete your dblpStore Registration<br><br>"
+							+ "<a href='"+"http://localhost:8080/COMP9321_Assignment2/emailConfirm.jsp?accId="
+							+ userName+"'> Complete Registration</a><br><br>regards,<br>dblpAdmin";
+		String subject = "Registration Confirmation";
 		boolean sessionDebug = false;
 
 		Properties props = System.getProperties();
@@ -174,8 +175,7 @@ public class UserDao {
 		return user;
 	}
 	
-	public boolean insertUser(String username, String nickName, 
-			String fname, String lname, String email, Integer yob, String full_address, String CC, String password, Integer type){
+	public boolean insertUser(User user){
 		
 		Connection conn = null;
 		Statement stmt = null;
@@ -183,10 +183,15 @@ public class UserDao {
 			conn = DBUtils.getConnection();
 			stmt = (Statement) conn.createStatement();
 
-			String query = "INSERT INTO `users` (`id`, `username`, `nickname`, `fname`, `lname`, `email`, `yob`, `full_address`, `cc_no`, `password`, `type`, `acc_status`, `admin`) VALUES (NULL, '"+ username +"', '"+nickName+"', '"+fname+"', '"+lname+"', '"+email+"', '"+yob+"', '"+full_address+"', '"+CC+"', '"+password+"', '"+type+"', '1', '0');";
+			String query = "INSERT INTO `users` (`id`, `username`, `nickname`, `fname`, "
+					+ "`lname`, `email`, `yob`, `full_address`, `cc_no`, `password`, `type`, "
+					+ "`acc_status`, `admin`) VALUES (NULL, '"
+					+ user.getUsername() +"', '"+user.getNickname()+"', '"+user.getFname()+"', '"
+					+ user.getLname()+"', '"+user.getEmail()+"', '"+user.getYob()+"', '"
+					+ user.getFull_address()+"', '"+user.getCc_no()+"', '"+user.getPassword()+"', '"
+					+ user.getType()+"', '1', '0');";
 			String sql = query ;
-			int rs = stmt.executeUpdate(sql);
-			// STEP 5: Extract data from result set
+			stmt.executeUpdate(sql);
 			
 		} catch (SQLException se) {
 			// Handle errors for JDBC

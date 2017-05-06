@@ -1,6 +1,5 @@
 package COMP9321.Assignment2.SZP.ROUTER;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 
 import javax.servlet.ServletException;
@@ -13,7 +12,7 @@ import COMP9321.Assignment2.SZP.BEEN.User;
 import COMP9321.Assignment2.SZP.DAO.UserDao;
 
 /**
- * @author Jason
+ * @author JasonZhuang
  * Servlet implementation class RouterServlet
  */
 
@@ -75,11 +74,9 @@ public class RouterServlet extends HttpServlet {
 		String password = getRequestParameter(request, "password");
 		UserDao userDao = new UserDao();
 		User user = userDao.userLogin(uname, password);
-		// git try!
 		if(!user.getId().isEmpty()){
 			response.setContentType("text/html;charset=UTF-8");
 		    response.getWriter().write("True");
-		    System.out.println("User Found");
 		    session.setAttribute("user_name",uname);
 		    session.setAttribute("user_id",user.getId());
 		    session.setAttribute("full_name",user.getFname() + user.getLname());
@@ -98,27 +95,21 @@ public class RouterServlet extends HttpServlet {
 	
 	private void signup(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
 		// TODO Auto-generated method stub	
-		String username = null, nickName = null,fname = null, lname = null,email = null,full_address = null, password = null, CC = null;
-		Integer yob = null,type = null;
-		username = getRequestParameter(request,"username");
-		nickName = getRequestParameter(request,"nickName");
-		fname = getRequestParameter(request,"fname");
-		lname = getRequestParameter(request,"lname");
-		email = getRequestParameter(request,"email");
-		full_address = getRequestParameter(request,"full_address");
-		yob = Integer.valueOf(getRequestParameter(request,"yob"));
-		
-		UserDao user = new UserDao();
+		User user = new User();
+		UserDao userDao = new UserDao();
+		user.setUsername(getRequestParameter(request,"reg_username"));
+		user.setNickname(getRequestParameter(request,"reg_nickName"));
+		user.setFname(getRequestParameter(request,"reg_fname"));
+		user.setLname(getRequestParameter(request,"reg_lname"));
+		user.setEmail(getRequestParameter(request,"reg_email"));
+		user.setFull_address(getRequestParameter(request,"reg_address"));
+		user.setYob(Integer.valueOf(getRequestParameter(request,"reg_yob")));
 		try {
-			password = UserDao.getMD5(getRequestParameter(request,"password"));
-			type = Integer.valueOf(getRequestParameter(request,"type"));
-			CC = getRequestParameter(request,"CC");
-			System.out.println(CC);
-			if(user.insertUser(username,nickName,fname,  lname,  email,  yob,  full_address,  CC,  password,  type)){
-				String body = "Hi "+ nickName + ",<br><br>Please click on the following link to complete your dblpStore Registration<br><br>";
-				body += "<a href='"+"http://localhost:8080/COMP9321_Ass2/emailConfirm.jsp?accId="+username +"'> Complete Registration</a><br><br>regards,<br>dblpAdmin" ;
-				String subject = " Complete your registration";
-				UserDao.sendMail(email, subject  , body);
+			user.setPassword(UserDao.getMD5(getRequestParameter(request,"reg_password")));
+			user.setType(Integer.valueOf(getRequestParameter(request,"reg_type")));
+			user.setCc_no(getRequestParameter(request,"reg_CC"));
+			if(userDao.insertUser(user)){
+				UserDao.sendMail(user.getEmail(), user.getUsername(), user.getNickname());
 				response.setContentType("text/html;charset=UTF-8");
 				response.getWriter().write("True");
 			}else{

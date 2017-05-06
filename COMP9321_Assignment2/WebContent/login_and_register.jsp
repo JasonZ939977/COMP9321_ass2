@@ -5,17 +5,17 @@
 			.ready(
 					function() {
 						var flag = false;
-							$('#register-submit').click(
+							$('#register_submit').click(
 									function() {
 										var user = $('#reg_username').val();
-										var nickName = $('#nickName').val();
-										var fname = $('#fname').val();
-										var lname = $('#lname').val();
-										var email = $('#email').val();
-										var yob = $('#yob').val();
-										var full_address = $('#full_address').val();
-										var type = $('#type').val();
-										var CC = $('#CC').val();
+										var nickName = $('#reg_nickName').val();
+										var fname = $('#reg_fname').val();
+										var lname = $('#reg_lname').val();
+										var email = $('#reg_email').val();
+										var yob = $('#reg_yob').val();
+										var full_address = $('#reg_address').val();
+										var type = $('#reg_type').val();
+										var CC = $('#reg_CC').val();
 										var pwd = $('#reg_password').val();
 										if (user.length == 0
 												|| nickName.length == 0
@@ -58,10 +58,9 @@
 												$('#validFrm').html('Either one of the field is empty or Entered Data is not Valid').css('color','red');
 												}
 										});
-							$('#reg_password, #confirm-password').on('keyup', 
-									function() {
+							$('#reg_password, #confirm_password').on('keyup', function() {
 										var pass = $('#reg_password').val();
-										var conf = $('#confirm-password').val();
+										var conf = $('#confirm_password').val();
 										if (pass == conf) {
 											flag = false;
 											$('#divCheckPasswordMatch').html('Passwords Matching').css('color','green');
@@ -70,8 +69,7 @@
 												$('#divCheckPasswordMatch').html('Passwords Not Matching').css('color','red');
 												}
 										});
-							$('#CC').on('keyup',
-									function() {
+							$('#CC').on('keyup',function() {
 										var CC = $('#CC').val();
 										console.log(CC);
 										if (CC.length < 16) {
@@ -137,13 +135,14 @@
 					</div>
 					<div class="tab-pane" id="panel-241973">
 						<p>
-						<form class="form-horizontal" role="form" role="form" action="routerServlet" method="post">
+						<form class="form-horizontal" role="form" action="routerServlet" method="post">
+							<input type="hidden" name="action" value="signup"/>
 							<div class="form-group">
 								<label for="inputEmail3" class="col-sm-2 control-label">
 									Username
 								</label>
 								<div class="col-sm-10">
-								<input type="text" class="form-control" id="Username">
+								<input type="text" class="form-control" id="reg_username" name="reg_username">
 								</div>
 							</div>
 							<div class="form-group">
@@ -151,7 +150,7 @@
 									Password
 								</label>
 								<div class="col-sm-10">
-									<input type="password" class="form-control" id="Password">
+									<input type="password" class="form-control" id="reg_password" name="reg_password">
 								</div>
 							</div>
 							<div class="form-group">
@@ -159,7 +158,7 @@
 									Confirm Password
 								</label>
 								<div class="col-sm-10">
-									<input type="password" name="confirm-password"
+									<input type="password" name="confirm_password"
 											id="confirm-password" class="form-control" > 
 											<!-- <span id="divCheckPasswordMatch"></span><br> 
 											<span id="validCC"></span><br> 
@@ -171,7 +170,7 @@
 									Nick Name
 								</label>
 								<div class="col-sm-10">
-								<input type="text" class="form-control" id="Nickname">
+								<input type="text" class="form-control" id="reg_nickName" name="reg_nickName">
 								</div>
 							</div>
 							<div class="form-group">
@@ -179,7 +178,7 @@
 									First Name
 								</label>
 								<div class="col-sm-10">
-								<input type="text" class="form-control" id="First Name">
+								<input type="text" class="form-control" id="reg_fname" name="reg_fname">
 								</div>
 							</div>
 							<div class="form-group">
@@ -187,7 +186,7 @@
 									Last Name
 								</label>
 								<div class="col-sm-10">
-								<input type="text" class="form-control" id="Last Name">
+								<input type="text" class="form-control" id="reg_lname" name="reg_lname">
 								</div>
 							</div>
 							<div class="form-group">
@@ -195,7 +194,7 @@
 									Email
 								</label>
 								<div class="col-sm-10">
-								<input type="email" class="form-control" id="inputEmail3">
+								<input type="email" class="form-control" id="reg_email" name="reg_email">
 								</div>
 							</div>
 							<div class="form-group">
@@ -203,7 +202,7 @@
 									Address
 								</label>
 								<div class="col-sm-10">
-								<input type="text" class="form-control" id="Address">
+								<input type="text" class="form-control" id="reg_address" name="reg_address">
 								</div>
 							</div>
 							<div class="form-group">
@@ -211,7 +210,15 @@
 									Year of Birth
 								</label>
 								<div class="col-sm-10">
-								<input type="number" class="form-control" id="Address">
+								<input type="text" class="form-control" id="reg_yob" name="reg_yob">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="inputEmail3" class="col-sm-2 control-label">
+									Credit Card Number
+								</label>
+								<div class="col-sm-10">
+								<input type="text" class="form-control" id="reg_CC" name="reg_CC">
 								</div>
 							</div>
 							<div class="form-group">
@@ -219,25 +226,15 @@
 									Register type
 								</label>
 								<div class="col-sm-10">
-								<select name="type" id="type" class="form-control">
-									<option value="1">Register as Customer</option>
+								<select id="reg_type" class="form-control" name="reg_type">
+									<option value="1" selected>Register as Customer</option>
 									<option value="2">Register as Seller</option>
 								</select>
 								</div>
 							</div>
-							
 							<div class="form-group">
 								<div class="col-sm-offset-2 col-sm-10">
-									<div class="checkbox">
-										<label>
-											<input type="checkbox"> Remember me
-										</label>
-									</div>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<button type="submit" class="btn btn-default">
+									<button type="submit" class="btn btn-default" id="register_submit" name="register_submit">
 										Sign in
 									</button>
 								</div>
